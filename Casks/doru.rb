@@ -28,8 +28,8 @@ cask "doru" do
     # entry and extract the icon so the launcher shows Dóru with a proper
     # name and icon (matching the window's app id org.doru.doru).
     postflight_steps do
-      mkdir_p "~/.local/share/applications"
-      write_file "~/.local/share/applications/org.doru.doru.desktop", <<~DESKTOP
+      mkdir_p "/home/{{user}}/.local/share/applications"
+      write_file "/home/{{user}}/.local/share/applications/org.doru.doru.desktop", <<~DESKTOP
         [Desktop Entry]
         Type=Application
         Name=Dóru
@@ -39,7 +39,7 @@ cask "doru" do
         Terminal=false
         Categories=Education;Science;
       DESKTOP
-      mkdir_p "~/.local/share/icons/hicolor/512x512/apps"
+      mkdir_p "/home/{{user}}/.local/share/icons/hicolor/512x512/apps"
       run "curl",
           args:           ["-fsSL", "-o", "/home/{{user}}/.local/share/icons/hicolor/512x512/apps/org.doru.doru.png",
                            "https://raw.githubusercontent.com/borisovodov/homebrew-taps/main/icons/org.doru.doru.png"],
@@ -48,8 +48,8 @@ cask "doru" do
     end
 
     uninstall_postflight_steps do
-      remove "~/.local/share/applications/org.doru.doru.desktop"
-      remove "~/.local/share/icons/hicolor/512x512/apps/org.doru.doru.png"
+      remove "/home/{{user}}/.local/share/applications/org.doru.doru.desktop"
+      remove "/home/{{user}}/.local/share/icons/hicolor/512x512/apps/org.doru.doru.png"
     end
 
     zap trash: [
