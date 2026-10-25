@@ -40,12 +40,11 @@ cask "doru" do
         Categories=Education;Science;
       DESKTOP
       mkdir_p "~/.local/share/icons/hicolor/512x512/apps"
-      # Extraction mode needs no FUSE.
-      run "Applications/Doru.AppImage", base: :home, args: ["--appimage-extract", "doru.png"],
-                                        chdir: "/tmp", writable_paths: ["/tmp/squashfs-root"]
-      copy "/tmp/squashfs-root/doru.png", "~/.local/share/icons/hicolor/512x512/apps/org.doru.doru.png",
-           overwrite: true
-      remove "/tmp/squashfs-root", recursive: true
+      run "curl",
+          args:           ["-fsSL", "-o", "/home/{{user}}/.local/share/icons/hicolor/512x512/apps/org.doru.doru.png",
+                           "https://raw.githubusercontent.com/borisovodov/homebrew-taps/main/icons/org.doru.doru.png"],
+          network_access: true,
+          writable_paths: ["/home/{{user}}/.local/share/icons/hicolor/512x512/apps"]
     end
 
     uninstall_postflight_steps do
