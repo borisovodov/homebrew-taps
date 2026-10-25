@@ -4,10 +4,10 @@ cask "doru" do
                                    linux: on_arch_conditional(arm: "arm64", intel: "x86_64")
   url_ext = on_system_conditional macos: "dmg", linux: "AppImage"
 
-  version "0.0.19"
-  sha256 arm:          "f7a898342f402751d1158a9f36f70245930ecd682817d724dd35c81cb1ebd3cc",
-         arm64_linux:  "f1c101fe1b181c35df33771ec22256752ce95d8cce679f348a96303bf627d4ce",
-         x86_64_linux: "895b092a356e0bd3605b1623a11e66891b7028243a6d7d5846daad31433c46de"
+  version "0.0.20"
+  sha256 arm:          "cbf0cbf4a9a3daecd6cecf17519db40d1f8f6bdb5c0b5e4205e33569070afb44",
+         arm64_linux:  "3a6d88fff0207c691e0100b606bd88032ff98e8aaa2ea1831a679f890b402795",
+         x86_64_linux: "e1e21f6e8693f42a60d871af15c26d0fa6973289c94a103f558d334a2b0c4052"
 
   on_macos do
     depends_on arch: :arm64
