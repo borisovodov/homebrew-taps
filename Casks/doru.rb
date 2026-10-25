@@ -25,7 +25,7 @@ cask "doru" do
     app_image "doru-linux-#{url_arch}.AppImage", target: "Doru.AppImage"
 
     # AppImages carry no desktop integration of their own: write the desktop
-    # entry and extract the icon so the launcher shows Dóru with a proper
+    # entry and extract the icon so the launcher shows the app with a proper
     # name and icon (matching the window's app id org.doru.doru).
     postflight_steps do
       mkdir_p "/home/{{user}}/.local/share/applications"
@@ -33,8 +33,8 @@ cask "doru" do
         [Desktop Entry]
         Type=Application
         # Must match the `name` stanza; the {{name}} template expands to the
-        # names array and would render as ["Dóru"].
-        Name=Dóru
+        # names array and would render as ["Doru"].
+        Name=Doru
         Comment=Local-first genealogy for the AI era
         Exec=/home/{{user}}/Applications/Doru.AppImage %U
         Icon=org.doru.doru
@@ -61,7 +61,7 @@ cask "doru" do
   end
 
   url "https://github.com/borisovodov/doru/releases/download/v#{version}/doru-#{os}-#{url_arch}.#{url_ext}"
-  name "Dóru"
+  name "Doru"
   desc "Local-first genealogy for the AI era"
   homepage "https://doru.family/"
 
