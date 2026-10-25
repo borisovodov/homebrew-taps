@@ -32,7 +32,7 @@ cask "doru" do
       write_file "/home/{{user}}/.local/share/applications/org.doru.doru.desktop", <<~DESKTOP
         [Desktop Entry]
         Type=Application
-        Name=Dóru
+        Name={{name}}
         Comment=Local-first genealogy for the AI era
         Exec=/home/{{user}}/Applications/Doru.AppImage %U
         Icon=org.doru.doru
