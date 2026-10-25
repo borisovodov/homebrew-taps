@@ -24,6 +24,35 @@ cask "doru" do
   on_linux do
     app_image "doru-linux-#{url_arch}.AppImage", target: "Doru.AppImage"
 
+    # AppImages carry no desktop integration of their own: write the desktop
+    # entry and extract the icon so the launcher shows Dóru with a proper
+    # name and icon (matching the window's app id org.doru.doru).
+    postflight_steps do
+      mkdir_p "~/.local/share/applications"
+      write_file "~/.local/share/applications/org.doru.doru.desktop", <<~DESKTOP
+        [Desktop Entry]
+        Type=Application
+        Name=Dóru
+        Comment=Local-first genealogy for the AI era
+        Exec=/home/{{user}}/Applications/Doru.AppImage %U
+        Icon=org.doru.doru
+        Terminal=false
+        Categories=Education;Science;
+      DESKTOP
+      mkdir_p "~/.local/share/icons/hicolor/512x512/apps"
+      # Extraction mode needs no FUSE.
+      run "Applications/Doru.AppImage", base: :home, args: ["--appimage-extract", "doru.png"],
+                                        chdir: "/tmp", writable_paths: ["/tmp/squashfs-root"]
+      copy "/tmp/squashfs-root/doru.png", "~/.local/share/icons/hicolor/512x512/apps/org.doru.doru.png",
+           overwrite: true
+      remove "/tmp/squashfs-root", recursive: true
+    end
+
+    uninstall_postflight_steps do
+      remove "~/.local/share/applications/org.doru.doru.desktop"
+      remove "~/.local/share/icons/hicolor/512x512/apps/org.doru.doru.png"
+    end
+
     zap trash: [
       "~/.cache/Doru",
       "~/.config/Doru",
