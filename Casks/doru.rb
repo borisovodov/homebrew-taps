@@ -32,7 +32,9 @@ cask "doru" do
       write_file "/home/{{user}}/.local/share/applications/org.doru.doru.desktop", <<~DESKTOP
         [Desktop Entry]
         Type=Application
-        Name={{name}}
+        # Must match the `name` stanza; the {{name}} template expands to the
+        # names array and would render as ["Dóru"].
+        Name=Dóru
         Comment=Local-first genealogy for the AI era
         Exec=/home/{{user}}/Applications/Doru.AppImage %U
         Icon=org.doru.doru
