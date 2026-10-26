@@ -43,7 +43,10 @@ cask "doru" do
       DESKTOP
       mkdir_p "/home/{{user}}/.local/share/icons/hicolor/512x512/apps"
       run "curl",
-          args:           ["-fsSL", "-o", "/home/{{user}}/.local/share/icons/hicolor/512x512/apps/org.doru.doru.png",
+          # Retry: the uninstall step removes the icon on every upgrade, and
+          # a single flaky fetch would leave the launcher without one.
+          args:           ["-fsSL", "--retry", "5", "--retry-all-errors", "--retry-delay", "2",
+                           "-o", "/home/{{user}}/.local/share/icons/hicolor/512x512/apps/org.doru.doru.png",
                            "https://raw.githubusercontent.com/borisovodov/homebrew-taps/main/icons/org.doru.doru.png"],
           network_access: true,
           writable_paths: ["/home/{{user}}/.local/share/icons/hicolor/512x512/apps"]
