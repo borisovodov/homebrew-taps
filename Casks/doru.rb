@@ -25,8 +25,13 @@ cask "doru" do
     app_image "doru-linux-#{url_arch}.AppImage", target: "Doru.AppImage"
 
     # AppImages carry no desktop integration of their own: write the desktop
-    # entry and extract the icon so the launcher shows Dóru with a proper
-    # name and icon (matching the window's app id org.doru.doru).
+    # entry, register the .doru/.gdz MIME types and extract the icon so the
+    # launcher shows Dóru with a proper name and icon (matching the window's
+    # app id org.doru.doru) and file managers associate the app with its file
+    # types. `.ged` files are GEDCOM text; their type ships in
+    # shared-mime-info itself (text/vnd.familysearch.gedcom), so the desktop
+    # entry only declares it. The cache rebuilds keep the registration in
+    # sync; the tools ship with shared-mime-info and desktop-file-utils.
     postflight_steps do
       mkdir_p "/home/{{user}}/.local/share/applications"
       write_file "/home/{{user}}/.local/share/applications/org.doru.doru.desktop", <<~DESKTOP
@@ -40,18 +45,52 @@ cask "doru" do
         Icon=org.doru.doru
         Terminal=false
         Categories=Education;Science;
+        MimeType=application/x-doru;application/x-gedzip;text/vnd.familysearch.gedcom;
       DESKTOP
+      mkdir_p "/home/{{user}}/.local/share/mime/packages"
+      write_file "/home/{{user}}/.local/share/mime/packages/org.doru.doru.xml", <<~XML
+        <?xml version="1.0" encoding="UTF-8"?>
+        <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+          <mime-type type="application/x-doru">
+            <comment>Dóru family tree</comment>
+            <glob pattern="*.doru"/>
+            <icon name="org.doru.doru"/>
+          </mime-type>
+          <mime-type type="application/x-gedzip">
+            <comment>GEDZIP genealogy archive</comment>
+            <glob pattern="*.gdz"/>
+            <icon name="org.doru.doru"/>
+          </mime-type>
+        </mime-info>
+      XML
       mkdir_p "/home/{{user}}/.local/share/icons/hicolor/512x512/apps"
       run "curl",
           args:           ["-fsSL", "-o", "/home/{{user}}/.local/share/icons/hicolor/512x512/apps/org.doru.doru.png",
                            "https://raw.githubusercontent.com/borisovodov/homebrew-taps/main/icons/org.doru.doru.png"],
           network_access: true,
           writable_paths: ["/home/{{user}}/.local/share/icons/hicolor/512x512/apps"]
+      run "update-mime-database",
+          args:           ["/home/{{user}}/.local/share/mime"],
+          must_succeed:   false,
+          writable_paths: ["/home/{{user}}/.local/share/mime"]
+      run "update-desktop-database",
+          args:           ["/home/{{user}}/.local/share/applications"],
+          must_succeed:   false,
+          writable_paths: ["/home/{{user}}/.local/share/applications"]
     end
 
     uninstall_postflight_steps do
       remove "/home/{{user}}/.local/share/applications/org.doru.doru.desktop"
+      remove "/home/{{user}}/.local/share/mime/packages/org.doru.doru.xml"
       remove "/home/{{user}}/.local/share/icons/hicolor/512x512/apps/org.doru.doru.png"
+      run "update-mime-database",
+          args:           ["/home/{{user}}/.local/share/mime"],
+          must_succeed:   false,
+          writable_paths: ["/home/{{user}}/.local/share/mime"]
+      run "update-desktop-database",
+          args:           ["/home/{{user}}/.local/share/applications"],
+          must_succeed:   false,
+          writable_paths: ["/home/{{user}}/.local/share/applications"]
     end
 
     zap trash: [

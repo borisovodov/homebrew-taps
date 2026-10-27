@@ -21,7 +21,10 @@ no self-update mechanism (`auto_updates false`), so Homebrew is the update
 channel: each release bumps `version` and the `sha256` entries in
 `Casks/doru.rb` (the `livecheck` block tracks the GitHub releases). The cask
 uses Homebrew 7 cask DSL (`on_system_conditional`, `app_image`); older
-Homebrew versions cannot parse it.
+Homebrew versions cannot parse it. On Linux the cask also writes the desktop
+entry and icon, and registers the `.doru`/`.gdz` MIME types (`.ged` files use
+the `text/vnd.familysearch.gedcom` type that ships with shared-mime-info), so
+file managers associate Dóru with all three extensions.
 
 ## Updates
 
